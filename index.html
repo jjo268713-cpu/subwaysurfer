@@ -21,7 +21,7 @@
             numScreenshots: 4,
 
             unityVersion: '2019.4.18f1',
-            unityWebglBuildUrl: 'Build\/SanFrancisco.json',
+            unityWebglBuildUrl: 'Build/SanFrancisco.json', /* Fixed Web Slash Path */
 
             fileSize: 35,
             cachedDecompressedFileSizes: {
@@ -244,7 +244,7 @@
             }, 400);
         }
 
-        // NEW CONTROL KEY BIND LISTENER (Ctrl + Q)
+        // CONTROL KEY BIND LISTENER (Ctrl + Q)
         window.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'q') {
                 e.preventDefault();
@@ -263,7 +263,6 @@
                 if (key === 'a' || key === 'arrowleft') {
                     forwardKeyToEngine("ArrowLeft");
                     if (activeTrainerMode === 'training' && isFastStrafeActive && key === 'a') {
-                        // Double tap injection to force immediate high-speed side movement
                         setTimeout(() => forwardKeyToEngine("ArrowLeft"), 15);
                         setTimeout(() => forwardKeyToEngine("ArrowLeft"), 30);
                     }
@@ -316,17 +315,4 @@
         })(document, "script", "gamemonetize-sdk"); 
     </script>
 </body>
-
-<script type="text/javascript">
-    function google_analytics() {
-        if (typeof sdk !== 'undefined' && sdk.showBanner !== 'undefined') {
-            sdk.showBanner();
-        }
-    };
-    function google_analytics_ID() {
-        if (typeof sdk !== 'undefined' && sdk.showBanner !== 'undefined') {
-            sdk.showBanner();
-        }
-    };
-</script>
 </html>
