@@ -44,7 +44,6 @@
             background-color: #111;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
-            /* Force GPU Hardware Acceleration */
             transform: translate3d(0,0,0);
             -webkit-transform: translate3d(0,0,0);
         }
@@ -224,7 +223,7 @@
 
         <div class="tip-box">
             Press <strong>Ctrl + Q</strong> to open or hide this panel.<br><br>
-            Arrows move 100x faster inside Training Mode with Lag Fix enabled!
+            Use your <strong>Arrow Keys</strong> to maneuver. Left/Right keys force an instant lane shift!
         </div>
     </div>
 
@@ -253,7 +252,6 @@
             }, 300);
         }
 
-        // CONTROL KEY BIND LISTENER (Ctrl + Q)
         window.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'q') {
                 e.preventDefault();
@@ -262,42 +260,42 @@
             }
         });
 
-        // 100X INSTANT ACCELERATION LOGIC
+        // FIXED HYPER-SPEED ARROW LISTENERS (Captures event immediately before Unity drops it)
         window.addEventListener('keydown', function(e) {
             let isFastStrafeActive = document.getElementById('speed-toggle').checked;
             let isLagFixActive = document.getElementById('lag-toggle').checked;
 
             if (activeTrainerMode === 'training' && isFastStrafeActive) {
                 if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-                    
-                    if (isLagFixActive) {
-                        // NO LAG MODE: Instantly jump character states by clean engine execution 
-                        // rather than looping browser key simulations
-                        for (let i = 0; i < 5; i++) {
-                            injectKeyDirectly(e.key);
-                        }
-                    } else {
-                        // Standard Mode: Rapid event loops (Legacy execution fallback)
-                        injectKeyDirectly(e.key);
-                        setTimeout(() => injectKeyDirectly(e.key), 5);
-                        setTimeout(() => injectKeyDirectly(e.key), 10);
+                    // Send 4 instant consecutive key injections to force the engine state to update immediately
+                    injectHyperKey(e.key);
+                    injectHyperKey(e.key);
+                    if (!isLagFixActive) {
+                        // Fallback delays only if No-Lag mode is turned off
+                        setTimeout(() => injectHyperKey(e.key), 5);
+                        setTimeout(() => injectHyperKey(e.key), 10);
                     }
                 }
             }
-        }, true);
+        }, true); // True handles the capturing phase so it has absolute priority
 
-        function injectKeyDirectly(arrowKeyName) {
+        function injectHyperKey(arrowKeyName) {
             const canvas = document.querySelector('canvas') || document.getElementById('canvas');
             if (canvas) {
+                // Synthesize raw hardware input parameters directly into the target element
                 canvas.dispatchEvent(new KeyboardEvent('keydown', {
                     key: arrowKeyName,
                     code: arrowKeyName,
+                    keyCode: arrowKeyName === "ArrowLeft" ? 37 : 39,
+                    which: arrowKeyName === "ArrowLeft" ? 37 : 39,
                     bubbles: true,
                     cancelable: true
                 }));
                 canvas.dispatchEvent(new KeyboardEvent('keyup', {
                     key: arrowKeyName,
                     code: arrowKeyName,
+                    keyCode: arrowKeyName === "ArrowLeft" ? 37 : 39,
+                    which: arrowKeyName === "ArrowLeft" ? 37 : 39,
                     bubbles: true,
                     cancelable: true
                 }));
