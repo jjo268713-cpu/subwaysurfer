@@ -207,7 +207,7 @@
 
         <div class="tip-box">
             Press <strong>Ctrl + Q</strong> to open or hide this panel.<br><br>
-            Use your <strong>Arrow Keys</strong> to play. In training mode, side arrows move extra fast!
+            Use your <strong>Arrow Keys</strong> to maneuver. In training mode, left/right buttons speed across lanes smoothly!
         </div>
     </div>
 
@@ -249,10 +249,8 @@
         window.addEventListener('keydown', function(e) {
             let isFastStrafeActive = document.getElementById('speed-toggle').checked;
 
-            // Target arrow keys exclusively when training mode is active
             if (activeTrainerMode === 'training' && isFastStrafeActive) {
                 if (e.key === "ArrowLeft") {
-                    // Send rapid successive strafe commands to the running canvas instance
                     injectKeyToCanvas("ArrowLeft");
                     setTimeout(() => injectKeyToCanvas("ArrowLeft"), 10);
                     setTimeout(() => injectKeyToCanvas("ArrowLeft"), 20);
@@ -263,10 +261,9 @@
                     setTimeout(() => injectKeyToCanvas("ArrowRight"), 20);
                 }
             }
-        }, true); // Use capturing phase to run before engine takes focus
+        }, true);
 
         function injectKeyToCanvas(arrowKeyName) {
-            // Find the canvas element created by UnityLoader dynamically
             const targetCanvas = document.querySelector('canvas') || document.getElementById('canvas');
             if (targetCanvas) {
                 const downEvent = new KeyboardEvent('keydown', {
