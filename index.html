@@ -91,7 +91,7 @@
             box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
         }
 
-        /* Trainer Overlay Panel (Ctrl + K) */
+        /* Trainer Overlay Panel (Ctrl + Q) */
         #mod-menu {
             position: fixed;
             top: 20px;
@@ -214,7 +214,7 @@
         </div>
 
         <div class="tip-box">
-            Press <strong>Ctrl + K</strong> to show or hide this panel.<br><br>
+            Press <strong>Ctrl + Q</strong> to show or hide this panel.<br><br>
             <strong>What should we put here next?</strong> Tell me your custom mod menu text configs!
         </div>
     </div>
@@ -240,13 +240,13 @@
             
             screen.style.opacity = '0';
             setTimeout(() => {
-                screen.style.style.display = 'none';
+                screen.style.display = 'none';
             }, 400);
         }
 
-        // CONTROL KEY BIND LISTENER (Ctrl + K)
+        // NEW CONTROL KEY BIND LISTENER (Ctrl + Q)
         window.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'q') {
                 e.preventDefault();
                 const menu = document.getElementById('mod-menu');
                 menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
@@ -254,15 +254,11 @@
         });
 
         // GLOBAL INPUT FORWARDER & STRAFE ACCELERATOR
-        // Intercepts window keys and routes them safely straight into the runtime canvas
         window.addEventListener('keydown', function(e) {
-            if (!window.unityGame) return; // Wait until Unity engine container is fully built
-            
             let key = e.key.toLowerCase();
             let isWasdActive = document.getElementById('wasd-toggle').checked;
             let isFastStrafeActive = document.getElementById('speed-toggle').checked;
 
-            // Map WASD inputs directly to Arrow Events smoothly
             if (isWasdActive) {
                 if (key === 'a' || key === 'arrowleft') {
                     forwardKeyToEngine("ArrowLeft");
@@ -292,8 +288,7 @@
         });
 
         function forwardKeyToEngine(keyCodeName) {
-            // Locates the underlying active game container element created by UnityLoader
-            const canvasElement = document.querySelector('canvas') || document.getElementById('#canvas');
+            const canvasElement = document.querySelector('canvas') || document.getElementById('canvas');
             if (canvasElement) {
                 const eventConfig = { key: keyCodeName, bubble: true, cancelable: true };
                 canvasElement.dispatchEvent(new KeyboardEvent('keydown', eventConfig));
@@ -318,7 +313,7 @@
         (function (a, b, c) {
             var d = a.getElementsByTagName(b)[0];
             a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://api.gamemonetize.com/sdk.js", d.parentNode.insertBefore(a, d))
-        })(document, \"script\", \"gamemonetize-sdk\"); 
+        })(document, "script", "gamemonetize-sdk"); 
     </script>
 </body>
 
