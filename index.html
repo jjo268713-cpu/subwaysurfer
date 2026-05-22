@@ -21,7 +21,7 @@
             numScreenshots: 4,
 
             unityVersion: '2019.4.18f1',
-            unityWebglBuildUrl: 'Build/SanFrancisco.json', /* Fixed Web Slash Path */
+            unityWebglBuildUrl: 'Build/SanFrancisco.json',
 
             fileSize: 35,
             cachedDecompressedFileSizes: {
@@ -188,17 +188,9 @@
 
     <div id="mod-menu">
         <h2>Trainer Menu <span class="menu-status" id="mode-badge">TRAINING</span></h2>
-        
-        <div class="mod-option">
-            <span>WASD Key Controls</span>
-            <label class="switch">
-                <input type="checkbox" id="wasd-toggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
 
         <div class="mod-option">
-            <span>Fast A/D Strafe Speed</span>
+            <span>Fast Arrow Strafe</span>
             <label class="switch">
                 <input type="checkbox" id="speed-toggle" checked>
                 <span class="slider"></span>
@@ -214,8 +206,8 @@
         </div>
 
         <div class="tip-box">
-            Press <strong>Ctrl + Q</strong> to show or hide this panel.<br><br>
-            <strong>What should we put here next?</strong> Tell me your custom mod menu text configs!
+            Press <strong>Ctrl + Q</strong> to open or hide this panel.<br><br>
+            Use your <strong>Arrow Keys</strong> to play. In training mode, side arrows move extra fast!
         </div>
     </div>
 
@@ -253,47 +245,45 @@
             }
         });
 
-        // GLOBAL INPUT FORWARDER & STRAFE ACCELERATOR
+        // HIGH-SPEED ARROW INJECTOR LOOP
         window.addEventListener('keydown', function(e) {
-            let key = e.key.toLowerCase();
-            let isWasdActive = document.getElementById('wasd-toggle').checked;
             let isFastStrafeActive = document.getElementById('speed-toggle').checked;
 
-            if (isWasdActive) {
-                if (key === 'a' || key === 'arrowleft') {
-                    forwardKeyToEngine("ArrowLeft");
-                    if (activeTrainerMode === 'training' && isFastStrafeActive && key === 'a') {
-                        setTimeout(() => forwardKeyToEngine("ArrowLeft"), 15);
-                        setTimeout(() => forwardKeyToEngine("ArrowLeft"), 30);
-                    }
-                }
-                else if (key === 'd' || key === 'arrowright') {
-                    forwardKeyToEngine("ArrowRight");
-                    if (activeTrainerMode === 'training' && isFastStrafeActive && key === 'd') {
-                        setTimeout(() => forwardKeyToEngine("ArrowRight"), 15);
-                        setTimeout(() => forwardKeyToEngine("ArrowRight"), 30);
-                    }
-                }
-                else if (key === 'w' || key === 'arrowup') {
-                    forwardKeyToEngine("ArrowUp");
-                }
-                else if (key === 's' || key === 'arrowdown') {
-                    forwardKeyToEngine("ArrowDown");
-                }
-                else if (e.code === 'Space') {
-                    forwardKeyToEngine("Space");
+            // Target arrow keys exclusively when training mode is active
+            if (activeTrainerMode === 'training' && isFastStrafeActive) {
+                if (e.key === "ArrowLeft") {
+                    // Send rapid successive strafe commands to the running canvas instance
+                    injectKeyToCanvas("ArrowLeft");
+                    setTimeout(() => injectKeyToCanvas("ArrowLeft"), 10);
+                    setTimeout(() => injectKeyToCanvas("ArrowLeft"), 20);
+                } 
+                else if (e.key === "ArrowRight") {
+                    injectKeyToCanvas("ArrowRight");
+                    setTimeout(() => injectKeyToCanvas("ArrowRight"), 10);
+                    setTimeout(() => injectKeyToCanvas("ArrowRight"), 20);
                 }
             }
-        });
+        }, true); // Use capturing phase to run before engine takes focus
 
-        function forwardKeyToEngine(keyCodeName) {
-            const canvasElement = document.querySelector('canvas') || document.getElementById('canvas');
-            if (canvasElement) {
-                const eventConfig = { key: keyCodeName, bubble: true, cancelable: true };
-                canvasElement.dispatchEvent(new KeyboardEvent('keydown', eventConfig));
-                setTimeout(() => {
-                    canvasElement.dispatchEvent(new KeyboardEvent('keyup', eventConfig));
-                }, 50);
+        function injectKeyToCanvas(arrowKeyName) {
+            // Find the canvas element created by UnityLoader dynamically
+            const targetCanvas = document.querySelector('canvas') || document.getElementById('canvas');
+            if (targetCanvas) {
+                const downEvent = new KeyboardEvent('keydown', {
+                    key: arrowKeyName,
+                    code: arrowKeyName,
+                    bubbles: true,
+                    cancelable: true
+                });
+                const upEvent = new KeyboardEvent('keyup', {
+                    key: arrowKeyName,
+                    code: arrowKeyName,
+                    bubbles: true,
+                    cancelable: true
+                });
+
+                targetCanvas.dispatchEvent(downEvent);
+                setTimeout(() => targetCanvas.dispatchEvent(upEvent), 30);
             }
         }
 
